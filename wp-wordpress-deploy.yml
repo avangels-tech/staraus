@@ -61,7 +61,6 @@ spec:
         env:
         - name: WORDPRESS_DB_HOST
           value: staraus1-mysql
-#          value: production-instance-1.cu6o2e0wg3zj.ap-south-1.rds.amazonaws.com 
         - name: WORDPRESS_DB_PASSWORD
           valueFrom:
             secretKeyRef:
