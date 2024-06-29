@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: staraus1-mysql-persistent-storage
+  namespace: staraus-test1
+  labels:
+    app: staraust1
+    tier: mysql
+spec:
+  capacity:
+    storage: 6Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/var/efs/podtest-data/staraus-test1/mysql"

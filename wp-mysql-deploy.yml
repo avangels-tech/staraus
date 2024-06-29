@@ -1,0 +1,50 @@
+apiVersion:  apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: staraus1-mysql
+  namespace: staraus-test1 
+  labels:
+    app: staraust1
+spec:
+  replicas: 1
+  serviceName: mysql
+#  affinity:
+#    nodeAffinity:
+#      preferredDuringSchedulingIgnoredDuringExecution:
+#      - weight: 100
+#        preference:
+#          matchExpressions:
+#          - key: hostname1
+#            operator: In
+#            values:
+#            - worker2
+
+  selector:
+    matchLabels:
+      app: staraust1
+      tier: mysql
+  template:
+    metadata:
+      labels:
+        app: staraust1
+        tier: mysql
+    spec:
+      containers:
+      - image: mysql:5.7
+        name: mysql
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql1-pass        # the one generated before in secret.yml
+              key: password
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: staraus1-mysql-persistent-storage  # Location where mysql data will be stored
+          mountPath: "/var/lib/mysql"
+      volumes:
+      - name: staraus1-mysql-persistent-storage    # PVC
+        persistentVolumeClaim:
+          claimName: staraus1-mysql-persistent-storage

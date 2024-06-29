@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: staraus1-mysql   # will be used as a value in WORDPRESS_DB_HOST in wordpress-deploy.yml
+  namespace: staraus-test1
+  labels:
+    app: staraust1
+spec:
+  ports:
+    - port: 3306
+      targetPort: 3306
+  selector:
+    app: staraust1
+    tier: mysql
+  clusterIP: 10.96.0.204 ## Commented this line to change ClusterIP to NodePort ##

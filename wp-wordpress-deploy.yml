@@ -1,0 +1,79 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: staraust1
+  namespace: staraus-test1
+  labels:
+    app: staraust1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: staraust1
+      tier: frontend
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: staraust1
+        tier: frontend
+    spec:
+
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+#          requiredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - staraust1
+              topologyKey: "kubernetes.io/hostname"
+
+#        podAffinity:
+#          requiredDuringSchedulingIgnoredDuringExecution:
+#          - labelSelector:
+#              matchExpressions:
+#              - key: app
+#                operator: In
+#                values:
+#                - mysql
+#            topologyKey: "kubernetes.io/hostname"
+
+      containers:
+#      - image: wordpress:latest
+#      - image: wordpress:6.4.1
+#      - image: wordpress:6.4.0
+      - image: wordpress:6.5.2
+        name: staraust1
+        resources:
+          requests:
+            memory: "256Mi"
+           # memory: "512Mi"
+          limits:
+            memory: "512Mi"
+           # memory: "1024Mi"
+
+        env:
+        - name: WORDPRESS_DB_HOST
+          value: staraus1-mysql
+#          value: production-instance-1.cu6o2e0wg3zj.ap-south-1.rds.amazonaws.com 
+        - name: WORDPRESS_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql1-pass          # generated before in secret.yml
+              key: password
+        ports:
+        - containerPort: 80
+          name: staraust1
+        volumeMounts:
+        - name: wordpress-staraus1-persistent-storage
+          mountPath: "/var/www/html"          # which data will be stored
+      volumes:
+      - name: wordpress-staraus1-persistent-storage
+        persistentVolumeClaim:
+          claimName: wordpress-staraus1-persistent-storage

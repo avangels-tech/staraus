@@ -1,0 +1,17 @@
+# Create PersistentVolume
+# change the ip of NFS server
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: wordpress-staraus1-persistent-storage
+  namespace: staraus-test1
+  labels:
+    app: staraust1
+    tier: frontend
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/var/efs/podtest-data/staraus-test1/html"

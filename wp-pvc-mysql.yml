@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: staraus1-mysql-persistent-storage
+  namespace: staraus-test1
+  labels:
+    app: staraust1
+spec:
+  accessModes:
+#    - ReadWriteMany
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 6Gi
